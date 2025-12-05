@@ -1,0 +1,24 @@
+name: Destroy Infrastructure
+
+on:
+  workflow_dispatch: # Ibig sabihin, manual button click lang ito gagana
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-southeast-1 # Siguraduhin na tama ang region mo (check mo main.yml mo kung us-east-1 or ap-southeast-1)
+        run: terraform destroy -auto-approve
