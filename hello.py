@@ -6,7 +6,7 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'headers': {'Content-Type': 'application/json'},
         'body': json.dumps({
-            "message": "Hello from GitHub Actions! I am fully automated now",
+            "message": "Hello Stan! Official Cloud Engineer na ako!",
             "status": "Online",
             "powered_by": "AWS Lambda + Terraform"
         })
