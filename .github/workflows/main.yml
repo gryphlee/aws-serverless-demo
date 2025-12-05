@@ -1,0 +1,43 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main  # Tatakbo to kapag nag push ka sa main branch
+
+jobs:
+  terraform:
+    name: 'Terraform Plan & Apply'
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Download natin ang code mo mula sa repo
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # 2. Install natin ang Terraform sa runner
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.0
+
+    # 3. Login sa AWS (kukunin nya yung keys sa Settings > Secrets mamaya)
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1 # Palitan kung ibang region gamit mo (e.g., ap-southeast-1)
+
+    # 4. Initialize Terraform (download plugins)
+    - name: Terraform Init
+      run: terraform init
+
+    # 5. I-check kung ano ang babaguhin sa AWS (Plan)
+    - name: Terraform Plan
+      run: terraform plan
+
+    # 6. (Optional) I-apply na talaga sa AWS.
+    # Naka-comment out muna para safe. Tanggalin ang '#' sa baba kung ready na mag-deploy.
+    # - name: Terraform Apply
+    #   run: terraform apply -auto-approve
